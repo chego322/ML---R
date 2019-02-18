@@ -1,0 +1,39 @@
+
+set.seed(101)
+sample <- sample.int(n = nrow(USA), size = floor(.75*nrow(USA)), replace = F)
+train <- USA[sample, ]
+test  <- USA[-sample, ]
+
+
+### price and income Boston
+attach(train)
+plot(Price ~ Avg..Area.Income, train)
+
+fit1 = lm(Price ~ Avg..Area.Income, train)
+summary(fit1)
+abline(fit1, col = "red")
+confint(fit1)
+
+?predict
+
+y = predict(fit1, test, interval = "confidence")
+y1 = y[, "fit"]
+y1
+x = test$Price
+
+plot(y1 ~ test$Price)
+
+###Koristeči sve prediktore IZACITI KOLONU SA  <- NULL
+names(train)
+View(train)
+train$Address <- NULL
+
+fit3 = lm(Price ~., train)
+summary(fit3)
+
+par(mfrow=c(2,2))
+plot(fit3)
+
+fit4 = update(fit3, ~. -Avg..Area.Number.of.Bedrooms)
+summary(fit4)
+
